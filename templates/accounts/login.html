@@ -1,0 +1,57 @@
+{# templates/accounts/login.html #}
+{% extends "base.html" %}
+{% load i18n %} {# <--- Добавлен i18n #}
+
+{% block title %}{% translate "Вход в систему" %}{% endblock %} {# Перевод #}
+
+{% block content %}
+<div class="container" style="padding-top: 30px; padding-bottom: 30px; max-width: 500px;">
+    <h1>{% translate "Вход" %}</h1> {# Перевод #}
+
+    {% if form.errors %}
+         {# Это стандартное сообщение Django, переводится автоматически, если включен i18n #}
+        <p style="color: red;">{% translate "Неверное имя пользователя или пароль. Пожалуйста, попробуйте снова." %}</p> {# Перевод на всякий случай #}
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>{% translate "Ваша учетная запись не имеет доступа к этой странице. Чтобы продолжить, пожалуйста, войдите с учетной записью, имеющей доступ." %}</p> {# Перевод #}
+        {% else %}
+            <p>{% translate "Пожалуйста, войдите, чтобы увидеть эту страницу." %}</p> {# Перевод #}
+        {% endif %}
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group" style="margin-bottom: 15px;">
+             <label for="{{ form.username.id_for_label }}">{% translate "Имя пользователя" %}:</label> {# Перевод #}
+             {{ form.username }}
+        </div>
+         <div class="form-group" style="margin-bottom: 15px;">
+             <label for="{{ form.password.id_for_label }}">{% translate "Пароль" %}:</label> {# Перевод #}
+             {{ form.password }}
+        </div>
+
+        <button type="submit" class="cta-button">{% translate "Войти" %}</button> {# Перевод #}
+        <input type="hidden" name="next" value="{{ next|default:request.GET.next|default:'/' }}">
+    </form>
+
+    <p style="margin-top: 15px;"><a href="#">{% translate "Забыли пароль?" %}</a></p> {# Перевод #}
+    {# Получаем URL регистрации в переменную signup_url #}
+    {% url 'signup' as signup_url %}
+    <p style="margin-top: 15px;">
+        {% blocktranslate %}Нет аккаунта? <a href="{{ signup_url }}">Зарегистрируйтесь здесь</a>!{% endblocktranslate %}
+    </p>
+</div>
+
+<style>
+    #id_username, #id_password {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

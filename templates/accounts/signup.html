@@ -1,0 +1,114 @@
+{# templates/accounts/signup.html #}
+{% extends "base.html" %}
+{% load i18n %} {# <--- Добавлен i18n #}
+
+{% block title %}{% translate "Регистрация" %}{% endblock %} {# Перевод #}
+
+{% block content %}
+<div class="container signup-container" style="padding-top: 40px; padding-bottom: 60px; max-width: 600px; margin: auto;">
+    <h1 style="text-align: center; margin-bottom: 30px;">{% translate "Регистрация нового пользователя" %}</h1> {# Перевод #}
+    {# Получаем URL входа в переменную login_url #}
+    {% url 'login' as login_url %}
+    <p style="text-align: center; margin-bottom: 30px;">
+        {% blocktranslate %}Уже есть аккаунт? <a href="{{ login_url }}">Войти</a>.{% endblocktranslate %}
+    </p>
+
+    {% if messages %}
+        <div class="messages-container" style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}"
+                   style="padding: 15px; margin-bottom: 15px; border: 1px solid transparent; border-radius: 5px; font-size: 0.95em;
+                          {% if message.tags == 'success' %} background-color: #d1e7dd; border-color: #badbcc; color: #0f5132;
+                          {% elif message.tags == 'error' %} background-color: #f8d7da; border-color: #f5c6cb; color: #842029;
+                          {% else %} background-color: #e2e3e5; border-color: #d6d8db; color: #41464b; {% endif %}">
+                   {{ message }} {# Сообщения переводятся во views.py #}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+     {% if form.non_field_errors %}
+        <div class="alert alert-danger" style="background-color: #f8d7da; border-color: #f5c6cb; color: #842029; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+            {% for error in form.non_field_errors %}
+                <p style="margin: 0;">{{ error }}</p> {# Ошибки переводятся в forms.py #}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" class="styled-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            {{ form.username.label_tag }} {# Метка переводится из формы #}
+            {{ form.username }}
+            {% if form.username.help_text %}
+                <small class="form-text text-muted">{{ form.username.help_text }}</small> {# Подсказка переводится из формы #}
+            {% endif %}
+            {% if form.username.errors %}
+                <div class="invalid-feedback">{{ form.username.errors }}</div> {# Ошибки переводятся из формы #}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.email.label_tag }} {# Метка переводится из формы #}
+            {{ form.email }}
+             {% if form.email.help_text %}
+                <small class="form-text text-muted">{{ form.email.help_text }}</small> {# Подсказка переводится из формы #}
+             {% endif %}
+            {% if form.email.errors %}
+                <div class="invalid-feedback">{{ form.email.errors }}</div> {# Ошибки переводятся из формы #}
+            {% endif %}
+        </div>
+
+        <div class="form-row" style="display: flex; gap: 20px; margin-bottom: 15px;">
+             <div class="form-group" style="flex: 1;">
+                {{ form.first_name.label_tag }} {# Метка переводится из формы #}
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="invalid-feedback">{{ form.first_name.errors }}</div> {# Ошибки переводятся из формы #}
+                {% endif %}
+            </div>
+             <div class="form-group" style="flex: 1;">
+                {{ form.last_name.label_tag }} {# Метка переводится из формы #}
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="invalid-feedback">{{ form.last_name.errors }}</div> {# Ошибки переводятся из формы #}
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            {{ form.password1.label_tag }} {# Метка переводится из формы #}
+            {{ form.password1 }}
+             {% if form.password1.help_text %}
+                <div class="password-help-text" style="font-size: 0.85em; color: #6c757d; margin-top: 8px;">
+                     {{ form.password1.help_text|safe }} {# Подсказка переводится из формы #}
+                </div>
+            {% endif %}
+            {% if form.password1.errors %}
+                <div class="invalid-feedback">{{ form.password1.errors }}</div> {# Ошибки переводятся из формы #}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.password2.label_tag }} {# Метка переводится из формы #}
+            {{ form.password2 }}
+            {% if form.password2.help_text %}
+                 <small class="form-text text-muted">{{ form.password2.help_text }}</small> {# Подсказка переводится из формы #}
+            {% endif %}
+            {% if form.password2.errors %}
+                <div class="invalid-feedback">{{ form.password2.errors }}</div> {# Ошибки переводятся из формы #}
+            {% endif %}
+        </div>
+
+        <button type="submit" class="cta-button" style="margin-top: 25px; width: 100%; padding: 15px;">{% translate "Зарегистрироваться" %}</button> {# Перевод #}
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ... стили формы ... */
+</style>
+{% endblock %}

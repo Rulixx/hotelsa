@@ -1,0 +1,1 @@
+web: gunicorn bishkek_premium_travel.wsgi --log-file -

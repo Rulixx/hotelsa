@@ -1,0 +1,185 @@
+{# templates/hotels/index.html #}
+{% extends "base.html" %}
+{% load static i18n %} {# <--- Добавлен i18n #}
+
+{% block title %}{% translate "Главная - Премиум Отели Бишкека" %}{% endblock %} {# Перевод #}
+
+{% block content %}
+<section class="hero" style="background-image: url('{% static 'C:\Users\Student\Desktop\bishkek_premium_project\static\bishkek-hero.jpeg' %}');">
+    <div class="container hero-content">
+        <h1>{% translate "Лучшие Отели для Бизнеса и Отдыха в Бишкеке" %}</h1> {# Перевод #}
+        <form class="search-form" id="main-search-form" action="{% url 'hotel_list' %}" method="GET">
+            <div class="form-group">
+                {# Метку лучше переводить в форме forms.py через verbose_name=_(...), но можно и здесь, если надо #}
+                <label for="hotel-name">{% translate "Название отеля (необязательно)" %}</label> {# Перевод #}
+                <input type="text" id="hotel-name" name="hotel_name" placeholder="{% translate 'Например, Hyatt Regency' %}"> {# Перевод placeholder #}
+            </div>
+            <div class="form-group">
+                <label for="checkin">{% translate "Заезд" %}</label> {# Перевод #}
+                <input type="date" id="checkin" name="checkin" required>
+            </div>
+            <div class="form-group">
+                <label for="checkout">{% translate "Выезд" %}</label> {# Перевод #}
+                <input type="date" id="checkout" name="checkout" required>
+            </div>
+            <div class="form-group">
+                <label for="guests">{% translate "Гости" %}</label> {# Перевод #}
+                <input type="number" id="guests" name="guests" min="1" value="1" required>
+            </div>
+            <button type="submit" class="cta-button">{% translate "Найти Отели" %}</button> {# Перевод #}
+        </form>
+    </div>
+</section>
+
+{% if featured_hotels %}
+<section class="popular-routes">
+    <div class="container">
+        <h2>{% translate "Рекомендуемые Отели в Бишкеке" %}</h2> {# Перевод #}
+        <div class="routes-grid hotel-grid"> {# Используем класс hotel-grid для единообразия #}
+            {% for hotel in featured_hotels %}
+            {# Добавляем класс card-has-overlay к article #}
+            <article class="hotel-card-preview card-has-overlay">
+                {# Контейнер для изображения и контента #}
+                <div class="card-image-container">
+                    {% if hotel.image_card %}
+                        <img src="{{ hotel.image_card.url }}" alt="{{ hotel.name }}">
+                    {% elif hotel.main_image %}
+                         <img src="{{ hotel.main_image.url }}" alt="{{ hotel.name }}">
+                    {% else %}
+                         {# Плейсхолдер с фоном, чтобы градиент был виден #}
+                         <div class="card-placeholder-image">
+                             <span>{% translate 'Нет фото' %}</span>
+                         </div>
+                    {% endif %}
+                </div>
+
+                {# Контейнер для текста, который будет наложен поверх #}
+                <div class="card-overlay-content">
+                    <h3><a href="{{ hotel.get_absolute_url }}">{{ hotel.name }}</a></h3>
+                    {# Здесь можно вывести адрес или рейтинг, как в примере #}
+                    {# Пример с адресом (обрезанным): #}
+                    <p>{{ hotel.address|truncatechars:30 }}</p>
+                    {# Пример с рейтингом: #}
+                    {# <p>{% translate "Рейтинг" %}: {{ hotel.get_rating_display }}</p> #}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# --- Секция Специальные Предложения --- #}
+<section class="special-offers" style="padding: 60px 0; background-color: #fff;"> {# Добавим фон для выделения #}
+     <div class="container">
+        <h2>{% translate "Специальные Предложения" %}</h2>
+
+        {# Проверяем, есть ли акционные отели #}
+        {% if special_offer_hotels %}
+            <div class="hotel-grid"> {# Используем ту же сетку, что и для рекомендуемых #}
+                {% for hotel in special_offer_hotels %}
+                {# Используем тот же стиль карточки, что и для рекомендуемых #}
+                <article class="hotel-card-preview card-has-overlay offer-card">
+                    <div class="card-image-container">
+                        {% if hotel.image_card %}
+                            <img src="{{ hotel.image_card.url }}" alt="{{ hotel.name }}">
+                        {% elif hotel.main_image %}
+                             <img src="{{ hotel.main_image.url }}" alt="{{ hotel.name }}">
+                        {% else %}
+                             <div class="card-placeholder-image">
+                                 <span>{% translate 'Нет фото' %}</span>
+                             </div>
+                        {% endif %}
+                         {# Добавим значок акции, если есть описание #}
+                         {% if hotel.special_offer_description %}
+                             <span class="special-offer-badge">{% translate "Акция!" %}</span>
+                         {% endif %}
+                    </div>
+                    <div class="card-overlay-content">
+                        <h3><a href="{{ hotel.get_absolute_url }}">{{ hotel.name }}</a></h3>
+                        {# Выводим описание акции, если оно есть #}
+                        {% if hotel.special_offer_description %}
+                            <p class="offer-description" title="{{ hotel.special_offer_description }}">{{ hotel.special_offer_description|truncatechars:45 }}</p>
+                        {% else %}
+                            {# Если описания нет, можно показать адрес или рейтинг #}
+                            <p>{{ hotel.address|truncatechars:30 }}</p>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            {# Сообщение, если акций нет #}
+            <p style="text-align: center; color: var(--secondary-color);">{% translate "В данный момент специальных предложений нет. Загляните позже!" %}</p>
+        {% endif %}
+     </div>
+</section>
+{# --- Конец Секции Специальные Предложения --- #}
+    {# --- СЕКЦИЯ "ПОЧЕМУ ВЫБИРАЮТ НАС?" --- #}
+    <section class="why-choose-us" style="background-color: #1a1d24; color: var(--text-color-light); padding: 60px 0;"> {# Темный фон #}
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="color: #fff; margin-bottom: 10px;">{% translate "Почему выбирают нас?" %}</h2>
+                <p style="color: var(--secondary-color); max-width: 600px; margin: auto;">{% translate "Мы стремимся сделать ваше путешествие и бронирование исключительным." %}</p>
+            </div>
+            <div class="features-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                {# Пример 4 карточек преимуществ #}
+                <div class="feature-item" style="background-color: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: var(--border-radius); text-align: center; border: 1px solid #343a40;">
+                     <div class="feature-icon" style="margin-bottom: 15px; font-size: 2.5rem; color: var(--accent-gold);">
+                         <i class="fas fa-shield-alt"></i> {# Нужен FontAwesome или другая библиотека иконок #}
+                     </div>
+                     <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 8px; font-family: var(--font-family-sans-serif);">{% translate "Безопасное Бронирование" %}</h3>
+                     <p style="font-size: 0.9rem; color: var(--secondary-color); line-height: 1.6;">{% translate "Ваши личные данные и платежная информация всегда защищены нашей безопасной системой бронирования." %}</p>
+                </div>
+                <div class="feature-item" style="background-color: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: var(--border-radius); text-align: center; border: 1px solid #343a40;">
+                     <div class="feature-icon" style="margin-bottom: 15px; font-size: 2.5rem; color: var(--accent-gold);">
+                         <i class="fas fa-star"></i>
+                     </div>
+                     <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 8px; font-family: var(--font-family-sans-serif);">{% translate "Гарантия Лучшей Цены" %}</h3>
+                     <p style="font-size: 0.9rem; color: var(--secondary-color); line-height: 1.6;">{% translate "Нашли цену ниже где-то еще? Мы предложим такую же и дадим дополнительную скидку 10%." %}</p>
+                </div>
+                <div class="feature-item" style="background-color: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: var(--border-radius); text-align: center; border: 1px solid #343a40;">
+                     <div class="feature-icon" style="margin-bottom: 15px; font-size: 2.5rem; color: var(--accent-gold);">
+                          <i class="fas fa-headset"></i>
+                     </div>
+                     <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 8px; font-family: var(--font-family-sans-serif);">{% translate "Поддержка 24/7" %}</h3>
+                     <p style="font-size: 0.9rem; color: var(--secondary-color); line-height: 1.6;">{% translate "Наша дружелюбная служба поддержки клиентов доступна круглосуточно, чтобы помочь с любыми вопросами." %}</p>
+                </div>
+                <div class="feature-item" style="background-color: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: var(--border-radius); text-align: center; border: 1px solid #343a40;">
+                     <div class="feature-icon" style="margin-bottom: 15px; font-size: 2.5rem; color: var(--accent-gold);">
+                         <i class="fas fa-gift"></i>
+                     </div>
+                     <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 8px; font-family: var(--font-family-sans-serif);">{% translate "Программа Лояльности" %}</h3>
+                     <p style="font-size: 0.9rem; color: var(--secondary-color); line-height: 1.6;">{% translate "Зарабатывайте баллы за каждое бронирование и обменивайте их на эксклюзивные скидки и привилегии." %}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    {# --- КОНЕЦ СЕКЦИИ "ПОЧЕМУ ВЫБИРАЮТ НАС?" --- #}
+
+
+    {# --- СЕКЦИЯ "ПРИЗЫВ К ДЕЙСТВИЮ" --- #}
+    <section class="cta-section" style="padding: 80px 0; background-color: #eef3f8;"> {# Светло-голубой фон #}
+        <div class="container">
+            <div class="cta-content" style="background: linear-gradient(45deg, #0056b3, #007bff); border-radius: var(--border-radius-lg); padding: 50px; display: flex; align-items: center; gap: 40px; overflow: hidden; position: relative; box-shadow: var(--box-shadow-lg);">
+                 {# Текстовый блок слева #}
+                <div class="cta-text" style="flex: 1; color: #fff; z-index: 2;">
+                    <h2 style="color: #fff; font-size: 2.2rem; margin-bottom: 15px;">{% translate "Готовы начать путешествие?" %}</h2>
+                    <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 30px; line-height: 1.8;">{% translate "Зарегистрируйтесь сегодня и получите эксклюзивный доступ к специальным предложениям, скидкам для участников и персональным рекомендациям." %}</p>
+                    <div class="cta-buttons">
+                         {# Ссылка на регистрацию #}
+                        <a href="{% url 'signup' %}" class="cta-button" style="background: var(--white-color); color: var(--primary-color-dark); box-shadow: none; margin-right: 15px;">{% translate "Создать аккаунт" %}</a>
+                        {# Ссылка на список отелей #}
+                        <a href="{% url 'hotel_list' %}" class="cta-button" style="background: transparent; border: 1px solid #fff; box-shadow: none;">{% translate "Изучить отели" %}</a>
+                    </div>
+                </div>
+                {# Изображение справа (опционально) #}
+                <div class="cta-image" style="flex: 0 0 40%; max-width: 400px; z-index: 1; display: none; /* Скрываем пока нет картинки */">
+                     {# Вставьте сюда img, если нужно изображение как в примере #}
+                     {# <img src="{% static 'images/cta-image.jpg' %}" alt="Journey" style="border-radius: var(--border-radius); width: 100%;"> #}
+                </div>
+            </div>
+        </div>
+    </section>
+    {# --- КОНЕЦ СЕКЦИИ "ПРИЗЫВ К ДЕЙСТВИЮ" --- #}
+{% endblock %}

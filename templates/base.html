@@ -1,0 +1,86 @@
+{# templates/base.html #}
+{% load static i18n %} {# <--- Добавлен i18n #}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}"> {# Используем текущий язык #}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% translate "Премиум Отели Бишкека" %}{% endblock %}</title> {# Перевод #}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://kit.fontawesome.com/1403abcc0d.js" crossorigin="anonymous"></script>
+    {% block extra_css %}{% endblock %}
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+         <div class="container header-container">
+            <a href="{% url 'home_page' %}" class="logo">
+                <img src="{% static 'logo_premium.svg' %}" alt="{% translate 'Логотип Premium Hotels Bishkek' %}">
+
+            </a>
+            <nav class="main-nav"> </nav>
+            <div class="header-controls">
+                 <form action="{% url 'set_language' %}" method="post" style="display: inline; margin: 0 10px 0 0;">
+                     {% csrf_token %}
+                     <input name="next" type="hidden" value="{{ request.path }}">
+                     <select name="language" onchange="this.form.submit()"
+                             style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;">
+                         {% get_current_language as LANGUAGE_CODE %}
+                         {% get_available_languages as LANGUAGES %}
+                         {% get_language_info_list for LANGUAGES as languages %}
+                         {% for language in languages %}
+                             <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                 {{ language.name_local }}
+                             </option>
+                         {% endfor %}
+                     </select>
+                 </form>
+
+                <div class="currency-switcher">
+                    <select name="currency" id="currency-select">
+                        <option value="kgs">KGS</option>
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                    </select>
+                </div>
+                {% if user.is_authenticated %}
+                    {# Возможно, здесь лучше использовать blocktranslate, если user.username может содержать непереводимые символы, но пока оставим так #}
+                    <a href="{% url 'account_bookings' %}" class="account-link">{% translate "Кабинет" %} ({{ user.username }})</a>
+                    <form action="{% url 'logout' %}" method="post" style="display: inline; margin: 0; padding: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="login-link"
+                                style="background: none; border: none; padding: 0; margin: 0; cursor: pointer; color: #0056b3; font-weight: 500; font-size: inherit; font-family: inherit; vertical-align: baseline;">
+                            {% translate "Выйти" %} {# Перевод #}
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="login-link">{% translate "Войти" %}</a> {# Перевод #}
+                    <a href="{% url 'signup' %}" class="signup-link">{% translate "Регистрация" %}</a> {# Перевод #}
+                {% endif %}
+            </div>
+            <button class="mobile-menu-toggle" aria-label="{% translate 'Открыть меню' %}">☰</button> {# Перевод #}
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="site-footer">
+         <div class="container">
+             {# Возможно, лучше разбить на части для перевода #}
+            <p>© {% now "Y" %} {% translate "Premium Hotels Bishkek. Все права защищены." %}</p> {# Перевод #}
+            <nav class="footer-nav">
+                <a href="#">{% translate "О нас" %}</a> {# Перевод #}
+                <a href="#">{% translate "Контакты" %}</a> {# Перевод #}
+                <a href="#">{% translate "Условия использования" %}</a> {# Перевод #}
+                <a href="#">{% translate "Политика конфиденциальности" %}</a> {# Перевод #}
+            </nav>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

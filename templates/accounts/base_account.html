@@ -1,0 +1,75 @@
+{# templates/accounts/base_account.html #}
+{% extends "base.html" %}
+{% load static i18n %} {# <--- Добавлен i18n #}
+
+{% block content %}
+<div class="account-page" style="padding: 30px 0;">
+    <div class="container account-container">
+        <h1>{% translate "Личный кабинет" %}</h1> {# Перевод #}
+        <div class="account-layout" style="display: flex; gap: 30px; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+            <nav class="account-nav" style="flex: 0 0 200px;">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {% url 'account_profile' as profile_url %}
+                    <li><a href="{{ profile_url }}" class="{% if request.path == profile_url %}active-tab{% endif %}">{% translate "Профиль" %}</a></li> {# Перевод #}
+
+                    {% url 'account_bookings' as bookings_url %}
+                    <li><a href="{{ bookings_url }}" class="{% if request.path == bookings_url %}active-tab{% endif %}">{% translate "Мои бронирования" %}</a></li> {# Перевод #}
+
+                    <li><a href="#">{% translate "Баллы и привилегии (TODO)" %}</a></li> {# Перевод #}
+                    <li><a href="#">{% translate "Настройки (TODO)" %}</a></li> {# Перевод #}
+                    <hr>
+                    {# Используем форму для выхода #}
+                    <li>
+                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="account-nav-logout-button"
+                                    style="background: none; border: none; padding: 12px 15px; margin: 0; cursor: pointer; color: #333; font-weight: 500; font-size: inherit; font-family: inherit; width: 100%; text-align: left;">
+                                {% translate "Выйти" %} {# Перевод #}
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+
+            <section class="account-content" style="flex: 1;">
+                {% block account_content %}
+                {% endblock %}
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Стили для навигации ЛК */
+.account-nav li a, .account-nav-logout-button {
+    display: block;
+    padding: 12px 15px;
+    color: #333;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    width: 100%; /* Для кнопки */
+    text-align: left; /* Для кнопки */
+}
+.account-nav li a:hover,
+.account-nav li a.active-tab,
+.account-nav-logout-button:hover {
+    background-color: #e9ecef;
+    color: #0056b3;
+    text-decoration: none;
+}
+.account-nav-logout-button {
+     background: none;
+     border: none;
+     cursor: pointer;
+     font-size: inherit;
+     font-family: inherit;
+     vertical-align: baseline;
+}
+
+</style>
+{% endblock %}

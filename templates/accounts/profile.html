@@ -1,0 +1,18 @@
+{# templates/accounts/profile.html #}
+{% extends "accounts/base_account.html" %} {# Наследуемся от base_account #}
+{% load i18n %} {# <--- Добавлен i18n #}
+
+{% block title %}{% translate "Мой профиль" %}{% endblock %} {# Перевод #}
+
+{% block account_content %}
+    <h2>{% translate "Личные данные" %}</h2> {# Перевод #}
+    <p><strong>{% translate "Имя пользователя" %}:</strong> {{ user.username }}</p> {# Перевод #}
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>{% translate "Имя" %}:</strong> {{ user.first_name|default:_("Не указано") }}</p> {# Перевод + default #}
+    <p><strong>{% translate "Фамилия" %}:</strong> {{ user.last_name|default:_("Не указано") }}</p> {# Перевод + default #}
+    <p>{% blocktranslate %}Дата регистрации: {{ user.date_joined|date:"d.m.Y H:i" }}{% endblocktranslate %}</p> {# Перевод #}
+
+    <a href="#" class="cta-button small">{% translate "Редактировать профиль (TODO)" %}</a> {# Перевод #}
+    <a href="#" class="cta-button small">{% translate "Изменить пароль (TODO)" %}</a> {# Перевод #}
+
+{% endblock %}

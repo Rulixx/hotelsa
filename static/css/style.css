@@ -1,0 +1,1636 @@
+    /* --- Базовые стили и сброс --- */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap'); /* Пример подключения шрифтов */
+
+    :root {
+        /* Цвета: Глубокие + Акценты */
+        --bg-dark: #1a1d24; /* Очень темный сине-серый фон */
+        --bg-content: #ffffff; /* Белый для контентных блоков */
+        --bg-light: #f1f3f5;    /* Очень светлый для контраста */
+        --text-color: #343a40;   /* Основной текст на светлом фоне */
+        --text-color-light: #e9ecef; /* Светлый текст на темном фоне */
+        --secondary-color: #adb5bd; /* Приглушенный серый для мета-инфо */
+        --accent-gold: #daa520;   /* Золотой акцент (кнопки, ссылки) */
+        --accent-gold-dark: #b8860b; /* Темнее золото для hover */
+        --accent-teal: #20c997;   /* Бирюзовый акцент (опционально) */
+        --border-color: #495057; /* Темная граница */
+        --border-color-light: #dee2e6; /* Светлая граница */
+        --warning-color: #ffc107; /* Звезды */
+        --success-color: #198754;
+        --danger-color: #dc3545;
+
+        /* Шрифты */
+        --font-family-serif: 'Playfair Display', serif; /* Для заголовков */
+        --font-family-sans-serif: 'Montserrat', sans-serif; /* Для основного текста */
+
+        /* Тени и Радиусы */
+        --box-shadow-sm: 0 .125rem .25rem rgba(0, 0, 0, .1);
+        --box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .15);
+        --box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, .2);
+        --border-radius: 6px;
+        --border-radius-lg: 10px;
+        --border-radius-sm: 4px; /* Added for consistency with new styles */
+
+        /* Дополнительные переменные из старого CSS, которые могут быть полезны или должны быть переопределены */
+        --primary-color: var(--accent-gold); /* Переназначаем, если где-то используется старое имя */
+        --primary-color-dark: var(--accent-gold-dark);
+        --white-color: #ffffff; /* Уже есть как --bg-content, но для явности */
+        --dark-gray: #495057; /* Уже есть как --border-color, но для текста */
+        --medium-gray: #e9ecef; /* Похоже на --text-color-light или --bg-light */
+        --light-gray: #f8f9fa; /* Похоже на --bg-light */
+    }
+
+    body {
+        font-family: var(--font-family-sans-serif);
+        margin: 0;
+        line-height: 1.7; /* Чуть больше */
+        color: var(--text-color);
+        background-color: var(--bg-light); /* Общий фон светлый */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-family-serif); /* Заголовки с засечками */
+        font-weight: 600;
+        color: var(--dark-gray); /* Темнее */
+    }
+
+    a {
+        color: var(--accent-gold);
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+    }
+    a:hover {
+        color: var(--accent-gold-dark);
+        text-decoration: none; /* Уберем подчеркивание при наведении */
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        vertical-align: middle;
+    }
+
+    .container {
+        max-width: 1240px; /* Чуть шире */
+        margin: 0 auto;
+        padding: 40px 20px 0; /* Изменено: добавлен padding-top: 40px, сохранены горизонтальные отступы, нижний отступ 0 */
+    }
+
+    /* --- Утилиты --- */
+    .cta-button {
+        display: inline-block;
+        padding: 12px 28px; /* Больше отступы */
+        background: linear-gradient(145deg, var(--accent-gold), var(--accent-gold-dark)); /* Градиент */
+        color: var(--white-color);
+        border: none; /* Убираем рамку */
+        border-radius: 50px; /* Полностью скругленные */
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.5px; /* Небольшой разряд */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+        box-shadow: 0 4px 10px rgba(218, 165, 32, 0.3); /* Тень под цвет кнопки */
+        text-transform: uppercase; /* Заглавные буквы */
+    }
+    .cta-button:hover {
+        background: linear-gradient(145deg, var(--accent-gold-dark), var(--accent-gold));
+        box-shadow: 0 6px 15px rgba(218, 165, 32, 0.4);
+        transform: translateY(-2px);
+        color: var(--white-color);
+    }
+    .cta-button:focus {
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(218, 165, 32, .5);
+    }
+    .cta-button.small {
+        padding: 8px 18px;
+        font-size: 0.8rem;
+        letter-spacing: 0.3px;
+        box-shadow: 0 2px 6px rgba(218, 165, 32, 0.3);
+    }
+    .cta-button.small:hover {
+        box-shadow: 0 4px 10px rgba(218, 165, 32, 0.4);
+        transform: translateY(-1px);
+    }
+
+    /* Стили сообщений - оставляем как были, они функциональны */
+    .alert { padding: 1rem; margin-bottom: 1rem; border: 1px solid transparent; border-radius: var(--border-radius); }
+    .alert-success { color: #0f5132; background-color: #d1e7dd; border-color: #badbcc; }
+    .alert-error, .alert-danger { color: #842029; background-color: #f8d7da; border-color: #f5c6cb; }
+    .alert-warning { color: #664d03; background-color: #fff3cd; border-color: #ffecb5; }
+    .alert-info { color: #055160; background-color: #cff4fc; border-color: #b6effb; }
+
+
+    /* --- Шапка --- */
+    .site-header {
+        background-color: var(--bg-dark); /* Темная шапка */
+        padding: 15px 0;
+        border-bottom: 1px solid #343a40; /* Темная граница */
+        position: sticky; top: 0; z-index: 1030;
+    }
+    .header-container { display: flex; justify-content: space-between; align-items: center; }
+    .logo img { height: 40px; width: auto; } /* Лого чуть больше */
+
+    .header-controls { display: flex; align-items: center; gap: 18px; } /* Больше gap */
+    .header-controls select {
+        padding: 5px 10px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        background-color: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон */
+        color: var(--text-color-light); /* Светлый текст */
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+    .header-controls select option { background-color: var(--bg-dark); color: #fff; }
+
+    .header-controls a, .header-controls .login-link, .account-link, .signup-link { /* Стилизуем все ссылки и кнопку выхода одинаково */
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: var(--text-color-light);
+        transition: color 0.2s ease;
+        background: none; border: none; padding: 0; cursor: pointer; font-family: inherit;
+    }
+    .header-controls a:hover, .header-controls .login-link:hover, .account-link:hover, .signup-link:hover {
+        color: var(--accent-gold);
+        text-decoration: none;
+    }
+    .header-controls form { margin: 0; display: inline; } 
+    .mobile-menu-toggle {
+        display: none; 
+        background: none;
+        border: none;
+        color: var(--text-color-light);
+        font-size: 2rem;
+        cursor: pointer;
+        padding: 0;
+    }
+
+
+    /* --- Главная страница --- */
+    .hero {
+        padding: 120px 0 140px;
+        min-height: 60vh;
+        background: linear-gradient(rgba(26, 29, 36, 0.7), rgba(26, 29, 36, 0.9)), url('/static/bishkek-hero.jpeg') center center/cover no-repeat; /* Темный градиент + изображение */
+        text-align: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white-color);
+        /* Если хотите параллакс - background-attachment: fixed; (но может тормозить) */
+    }
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+    }
+    .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 30px;
+        font-weight: 500; /* Слегка тоньше */
+        color: #fff;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+        opacity: 0; /* Изначально невидимый */
+        animation: fadeInSlideUp 0.8s 0.3s ease-out forwards; /* Анимация: имя, длительность, задержка, кривая, сохранить конечное состояние */
+    }
+    .search-form {
+        background-color: rgba(255, 255, 255, 0.1); /* Очень прозрачный */
+        padding: 25px;
+        border-radius: var(--border-radius-lg);
+        backdrop-filter: blur(5px); /* Эффект размытия фона */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px 20px;
+        justify-content: center;
+        align-items: flex-end;
+        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); /* Фиолетовая тень для "космоса"? */
+        opacity: 0; /* Изначально невидимый */
+        animation: fadeInSlideUp 0.8s 0.6s ease-out forwards; /* Применяем ту же анимацию, но с большей задержкой */
+    }
+    .search-form .form-group {
+        flex: 1 1 180px;
+        text-align: left;
+    }
+    .search-form label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-color-light);
+        opacity: 0.9;
+    }
+    .search-form input, .search-form select,
+    .search-form input[type="text"],
+    .search-form input[type="date"],
+    .search-form input[type="number"] {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.8); /* Светлый фон инпутов */
+        color: var(--text-color);
+        border: 1px solid transparent;
+        border-radius: var(--border-radius);
+        padding: 10px 14px;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .search-form input::placeholder { color: var(--secondary-color); opacity: 0.8;}
+    .search-form .cta-button {
+        margin-top: 10px;
+        flex-basis: auto;
+        width: 100%;
+        max-width: 180px;
+        height: auto;
+    }
+
+    /* Секции на главной */
+    .popular-routes, .special-offers, .featured-hotels {
+        padding: 60px 0;
+    }
+    .popular-routes h2, .special-offers h2, .featured-hotels h2 {
+        text-align: center;
+        margin-bottom: 35px;
+        font-size: 1.8rem;
+        color: var(--text-color); /* Заголовки секций на светлом фоне */
+    }
+    .featured-hotels { background-color: var(--white-color); } /* Выделяем белым */
+
+    /* Анимация для секций featured-hotels и special-offers */
+    .featured-hotels, .special-offers {
+        opacity: 0;
+        animation: fadeInSlideUp 1s 0.8s ease-out forwards; /* Еще большая задержка */
+    }
+
+    .routes-grid, .hotel-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    .route-card {
+        background-color: var(--white-color);
+        border-radius: var(--border-radius); /* Меньше скругление */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .08); /* Чуть заметнее тень */
+        border: none; /* Убираем рамку */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* ОБЯЗАТЕЛЬНО! Чтобы увеличенное изображение не вылезало */
+        position: relative; /* Для позиционирования, если нужно */
+    }
+    .route-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .12);
+    }
+    .route-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        display: block; /* Убедимся, что это блок */
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Плавный переход для transform */
+    }
+    .route-card:hover img {
+        transform: scale(1.08); /* Увеличиваем изображение на 8% при наведении на КАРТОЧКУ */
+    }
+    .route-card h3 {
+        font-size: 1.25rem;
+        margin: 15px 20px 8px;
+        font-weight: 600; /* Вернем жирность для заголовков карточек */
+    }
+    .route-card h3 a {
+        color: var(--text-color);
+    }
+    .route-card h3 a:hover {
+        color: var(--accent-gold);
+    }
+    .route-card p {
+        margin: 0 20px 15px;
+        font-size: 0.88rem;
+        color: var(--secondary-color);
+        flex-grow: 1;
+    }
+
+    /* --- Стили для карточек рекомендуемых отелей --- */
+    .hotel-card-preview.card-has-overlay {
+        position: relative;
+        display: block;
+        border-radius: var(--border-radius-lg); /* Оставляем скругление */
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+        /* МЕНЯЕМ СООТНОШЕНИЕ СТОРОН на более горизонтальное */
+        aspect-ratio: 16 / 10; /* Например, 16:10. Можно попробовать 4 / 3 */
+        background-color: var(--medium-gray);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hotel-card-preview.card-has-overlay:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--box-shadow-lg);
+    }
+
+    /* Контейнер изображения */
+    .card-has-overlay .card-image-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    /* Изображение */
+    .card-has-overlay .card-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* Плейсхолдер */
+    .card-has-overlay .card-placeholder-image {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--medium-gray);
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+    }
+
+    /* Эффект зума */
+    .card-has-overlay:hover .card-image-container img {
+        transform: scale(1.08);
+    }
+
+    /* Контейнер с текстом поверх */
+    .card-has-overlay .card-overlay-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 2;
+        /* УМЕНЬШАЕМ ВЕРТИКАЛЬНЫЙ ПАДДИНГ */
+        padding: 15px 20px;
+        color: #fff;
+        /* ИЗМЕНЯЕМ ГРАДИЕНТ - делаем его короче и интенсивнее снизу */
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 5%, rgba(0, 0, 0, 0.7) 35%, rgba(0, 0, 0, 0) 80%);
+        transition: background 0.3s ease;
+    }
+
+    /* Заголовок (Название отеля/города) */
+    .card-overlay-content h3 {
+        margin: 0 0 4px 0; /* Уменьшаем отступ снизу */
+        font-size: 1.25rem; /* Можно чуть уменьшить */
+        font-weight: 600;
+        color: #fff;
+        font-family: var(--font-family-sans-serif);
+        line-height: 1.3;
+    }
+    .card-overlay-content h3 a { color: inherit; text-decoration: none; }
+    .card-overlay-content h3 a:hover { color: var(--accent-gold); }
+
+    /* Параграф (Адрес или другая инфо) */
+    .card-overlay-content p {
+        margin: 0;
+        font-size: 0.8rem; /* Делаем мельче */
+        opacity: 0.8; /* Немного прозрачнее */
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    /* Убираем лишние стили, если были */
+    .hotel-card-preview p:last-child { margin-bottom: 0; }
+
+    /* Значок акции на карточке */
+    .special-offer-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: var(--danger-color); /* Красный цвет для привлечения внимания */
+        color: white;
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: var(--border-radius-sm);
+        z-index: 3; /* Поверх всего */
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Описание акции в overlay */
+    .card-overlay-content p.offer-description {
+        font-weight: 500; /* Чуть жирнее */
+        opacity: 0.95;
+        /* Можно добавить иконку */
+        /* display: flex; align-items: center; gap: 5px; */
+    }
+    /* .card-overlay-content p.offer-description::before { */
+        /* content: '🔥'; */ /* Пример иконки */
+    /* } */
+
+    /* --- Стили для Карточек Специальных Предложений --- */
+    .offer-card {
+        /* Переопределяем или добавляем */
+        border: 2px solid var(--accent-gold); /* Золотая рамка для выделения */
+        box-shadow: 0 8px 20px rgba(218, 165, 32, 0.2); /* Золотистая тень */
+        transform: none; /* Убираем базовый сдвиг, если он был */
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; /* Добавляем border-color в transition */
+    }
+
+    .offer-card:hover {
+        border-color: var(--accent-gold-dark); /* Рамка темнее при наведении */
+        box-shadow: 0 12px 30px rgba(218, 165, 32, 0.3); /* Тень интенсивнее */
+        transform: scale(1.03) translateY(-5px); /* Легкий подъем и увеличение */
+    }
+
+    /* Слегка изменим вид значка акции */
+    .offer-card .special-offer-badge {
+        background-color: var(--accent-gold); /* Золотой фон */
+        color: var(--bg-dark); /* Темный текст */
+        font-size: 0.8rem;
+        border-radius: var(--border-radius-sm) 0 var(--border-radius-sm) 0; /* Срезанный уголок */
+        top: 0; /* Прижимаем к верху */
+        right: 0; /* Прижимаем к правому краю */
+        padding: 5px 12px;
+    }
+
+    /* Делаем градиент под текстом чуть выше и заметнее */
+    .offer-card .card-overlay-content {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 10%, rgba(0, 0, 0, 0.75) 55%, rgba(0, 0, 0, 0) 100%);
+        padding-top: 40px; /* Больше отступ сверху внутри overlay */
+    }
+
+    /* Выделяем описание акции */
+    .offer-card .offer-description {
+        font-weight: 500;
+        opacity: 1; /* Делаем непрозрачным */
+        margin-top: 8px; /* Отступ от заголовка */
+        /* Можно добавить иконку подарка */
+        position: relative;
+        padding-left: 20px;
+    }
+    .offer-card .offer-description::before {
+        content: '🎁'; /* Иконка подарка (можно заменить на FontAwesome <i class="..."></i>) */
+        position: absolute;
+        left: 0;
+        top: 1px; /* Подравниваем по вертикали */
+        font-size: 0.9em;
+    }
+
+    /* (Опционально) Если добавили кнопку в карточку */
+    .offer-card .offer-cta {
+        display: inline-block; /* Чтобы не растягивалась */
+        margin-top: 15px;
+        padding: 6px 15px;
+        font-size: 0.8rem;
+        background: var(--white-color);
+        color: var(--accent-gold-dark);
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: none;
+    }
+    .offer-card .offer-cta:hover {
+        background: var(--light-gray);
+        color: #000;
+        transform: none; /* Убираем подъем кнопки */
+    }
+
+
+    /* --- Страница Результатов Поиска --- */
+    .search-results-page { padding: 50px 0; }
+    .results-container {
+        display: flex;
+        gap: 35px;
+        align-items: flex-start;
+    }
+    .filters-panel {
+        flex: 0 0 280px; /* Вернем ширину */
+        background-color: var(--white-color);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        position: sticky; top: 90px; /* Учитываем новую высоту шапки */
+    }
+    .filters-panel h2 {
+        font-size: 1.4rem;
+        margin-top: 0;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color-light);
+    }
+    .filter-group { margin-bottom: 25px; }
+    .filter-group h3 {
+        font-size: 1.05rem;
+        letter-spacing: 0.3px;
+        font-weight: 600; /* Заголовки фильтров жирнее */
+        margin-bottom: 12px;
+        color: var(--dark-gray);
+    }
+    .filter-group label {
+        display: block;
+        margin-bottom: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--text-color);
+    }
+    .filter-group label input[type="checkbox"] {
+        margin-right: 8px;
+        vertical-align: middle;
+        accent-color: var(--accent-gold); /* Цвет галочки */
+    }
+    .filter-group input[type="text"],
+    .filter-group input[type="number"] {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--border-color-light);
+        border-radius: var(--border-radius);
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    .apply-filters-button {
+        width: 100%;
+        padding: 10px;
+        background-color: var(--success-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+        text-transform: none; /* Убираем uppercase для этой кнопки */
+        box-shadow: none; /* Убираем тень для этой кнопки */
+    }
+    .apply-filters-button:hover {
+        background-color: #157347; /* Darker green */
+        transform: none; /* Убираем transform для этой кнопки */
+    }
+
+
+    .results-list { flex: 1; }
+    .results-list h1 {
+        font-size: 1.9rem;
+        margin-top: 0;
+        margin-bottom: 30px;
+        color: var(--dark-gray);
+    }
+
+    .result-item { /* Карточка отеля в результатах */
+        background-color: var(--white-color);
+        border-radius: var(--border-radius);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+        margin-bottom: 30px;
+        display: flex;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+    .result-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .12);
+    }
+    .result-item-image {
+        flex: 0 0 300px; /* Шире картинка */
+        height: 220px;
+        object-fit: cover;
+        border-radius: var(--border-radius) 0 0 var(--border-radius); /* Скругление слева */
+        background-color: var(--bg-light);
+    }
+    .result-item-info {
+        padding: 25px 30px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .result-item-info h2 {
+        font-size: 1.5rem;
+        margin: 0 0 10px;
+        font-weight: 600; /* Заголовки в карточках результатов */
+    }
+    .result-item-info h2 a { color: var(--text-color); }
+    .result-item-info h2 a:hover { color: var(--accent-gold); text-decoration: none; }
+
+    .rating {
+        color: var(--warning-color);
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+    .location {
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+        margin-bottom: 18px;
+    }
+    .amenities-preview {
+        list-style: none;
+        padding: 0;
+        margin: auto 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px; /* Больше отступ */
+    }
+    .amenities-preview li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: var(--secondary-color);
+    }
+    .amenities-preview li i {
+        font-size: 1.2em;
+        color: var(--accent-gold);
+        opacity: 1; /* Убираем прозрачность для иконок */
+    }
+    .amenities-preview li img {
+        height: 16px;
+        opacity: 0.8; /* Оставляем для img, если используются */
+    }
+
+    .result-item-price {
+        flex: 0 0 220px;
+        padding: 30px;
+        text-align: right;
+        border-left: 1px solid var(--border-color-light);
+        background-color: transparent; /* Убираем фон */
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+    }
+    .result-item-price .price {
+        font-size: 1.6rem;
+        font-weight: 500; /* Менее жирный */
+        color: var(--text-color);
+        margin-bottom: 8px;
+        line-height: 1.2;
+    }
+    .result-item-price .price span { /* Слово "от" */
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 400;
+        color: var(--secondary-color);
+    }
+    .result-item-price .cta-button {
+        margin-top: 20px;
+        border-radius: 5px; /* Обычная кнопка */
+        text-transform: none; /* Убираем uppercase */
+        box-shadow: none; /* Убираем тень */
+        background: var(--accent-gold); /* Простой фон, без градиента */
+    }
+    .result-item-price .cta-button:hover {
+        background: var(--accent-gold-dark);
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Стилизация пагинации */
+    .pagination {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 25px;
+        border-top: 1px solid var(--border-color-light);
+    }
+    .pagination a, .pagination span {
+        display: inline-block;
+        padding: 8px 14px;
+        margin: 0 4px;
+        border: 1px solid var(--border-color-light);
+        border-radius: var(--border-radius);
+        color: var(--accent-gold);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .pagination a:hover {
+        background-color: var(--accent-gold-dark);
+        border-color: var(--accent-gold-dark);
+        color: var(--white-color);
+        text-decoration: none;
+    }
+    .pagination .active {
+        background-color: var(--accent-gold);
+        color: var(--white-color);
+        border-color: var(--accent-gold);
+        cursor: default;
+        z-index: 3;
+    }
+    .pagination .disabled {
+        color: var(--secondary-color);
+        border-color: var(--border-color-light);
+        cursor: default;
+        background-color: var(--white-color);
+        opacity: 0.7;
+    }
+
+    /* --- Стили для Страницы Отеля (Обновления для Hero Image) --- */
+    .hotel-detail-page {
+        padding-top: 50px;
+        padding-bottom: 60px;
+    }
+
+    /* Секция с главным изображением */
+    .hotel-hero-image {
+        width: 100%;
+        height: 55vh; /* Высота - 55% высоты экрана */
+        max-height: 500px; /* Макс высота */
+        position: relative; /* Для позиционирования оверлея */
+        overflow: hidden; /* На всякий случай */
+        background-color: var(--medium-gray); /* Фон для плейсхолдера */
+    }
+
+    .hotel-hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Масштабируем */
+        display: block;
+    }
+    /* Плейсхолдер, если нет картинки */
+    .main-photo-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #444; /* Темный фон плейсхолдера */
+        color: #aaa;
+        font-size: 1.5rem;
+        font-family: var(--font-family-serif);
+    }
+
+
+    /* Контент поверх изображения */
+    .hero-image-overlay-content {
+        position: absolute;
+        bottom: 0; /* Размещаем внизу */
+        left: 0; /* От левого края КОНТЕЙНЕРА */
+        right: 0; /* До правого края КОНТЕЙНЕРА */
+        padding: 30px 0; /* Отступы */
+        z-index: 3; /* Поверх картинки */
+        color: #fff; /* Белый текст */
+        /* Темный градиент для читаемости */
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 50%, transparent 100%);
+        /* Применяем градиент только к этому блоку, не на всю картинку */
+         margin-left: -20px; /* Компенсируем паддинг контейнера */
+         margin-right: -20px;
+         padding-left: 20px;
+         padding-right: 20px;
+    }
+    .hero-image-overlay-content h1 {
+        font-size: 2.8rem;
+        font-weight: 600;
+        color: #fff; /* Белый заголовок */
+        margin-bottom: 8px;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* Тень */
+        font-family: var(--font-family-serif);
+    }
+    .hero-image-overlay-content .hotel-meta {
+        margin: 0;
+        display: flex;
+        gap: 15px; /* Расстояние между адресом и рейтингом */
+        align-items: center;
+    }
+    .hero-image-overlay-content .hotel-meta span {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.9); /* Слегка прозрачный белый */
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .hero-image-overlay-content .hotel-meta .fa-star {
+        color: var(--warning-color); /* Золотая звезда */
+    }
+
+
+    /* Убираем стили для старой галереи и миниатюр */
+    .hotel-gallery .main-photo,
+    .hotel-gallery .thumbnails,
+    .thumbnails-container {
+        display: none; /* Или просто удалить эти правила из CSS */
+    }
+
+
+    .hotel-content-main-wrapper {
+        background-color: var(--bg-content);
+        border-radius: var(--border-radius-lg);
+        padding: 40px 50px;
+        box-shadow: var(--box-shadow-lg);
+    }
+
+    /* Убираем заголовок/мету из основного контента, т.к. они теперь на фото */
+    .hotel-header-info {
+        display: none;
+    }
+
+
+    /* --- Галерея --- */
+    .hotel-gallery { margin-bottom: 30px; } /* Added to maintain spacing, similar to old */
+    .hotel-gallery .main-photo {
+        height: 550px; /* Оставляем высоту */
+        border-radius: var(--border-radius); /* Меньше скругление */
+        margin-bottom: 20px;
+        box-shadow: var(--box-shadow); /* Чуть мягче тень */
+        /* Assuming .main-photo is an <img> or has an <img> child, object-fit might be needed */
+        /* For an <img> tag, add: object-fit: cover; width: 100%; */
+        /* For a div with background-image, add: background-size: cover; background-position: center; width: 100%; */
+        background-color: var(--bg-light); /* Placeholder background for image container */
+    }
+    .hotel-gallery .thumbnails {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* чуть меньше мин. ширина */
+        gap: 12px;
+    }
+    .hotel-gallery .thumbnails img {
+        height: 80px; /* чуть меньше высота */
+        border-radius: var(--border-radius-sm);
+        border: 2px solid var(--border-color-light); /* Светлая рамка */
+        opacity: 0.7;
+        object-fit: cover; /* Added for better image display */
+        cursor: pointer; /* Added for better UX */
+        transition: opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; /* Added for consistency */
+    }
+    .hotel-gallery .thumbnails img:hover,
+    .hotel-gallery .thumbnails img.active {
+        opacity: 1;
+        border-color: var(--accent-gold);
+        box-shadow: var(--box-shadow-sm);
+    }
+
+    /* --- Основной контент --- */
+    .hotel-content-wrapper {
+        display: flex; /* Added to ensure layout, was present in old */
+        align-items: flex-start; /* Added to ensure layout, was present in old */
+        gap: 45px; /* Увеличим расстояние между колонками */
+        margin-top: 40px; /* Отступ от галереи */
+        margin-bottom: 40px; /* Added to maintain spacing, was present in old */
+    }
+    .hotel-main-info { flex: 1; min-width: 0; } /* Added to ensure layout, was present in old */
+
+    .hotel-main-info h1 {
+        font-family: var(--font-family-serif);
+        font-size: 2.6rem; /* Крупнее */
+        font-weight: 600;
+        margin-top: 0; /* Added for consistency, was present in old */
+        margin-bottom: 10px;
+        color: var(--text-color);
+    }
+
+    .hotel-meta { margin-bottom: 25px; } /* Отступ после рейтинга/адреса */
+    .hotel-meta .rating { /* This selector was .hotel-main-info .rating in old */
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    .hotel-meta .location { /* This selector was .hotel-main-info .location in old */
+        font-size: 1rem;
+        color: var(--secondary-color);
+    }
+
+    #hotel-map {
+        height: 300px;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color-light);
+        margin-top: 25px;
+        margin-bottom: 35px;
+        background: var(--bg-light); /* Added for consistency, was present in old */
+    }
+
+    /* Заголовки H2 в основной колонке */
+    .hotel-main-info h2 {
+        font-family: var(--font-family-serif);
+        font-size: 1.8rem;
+        font-weight: 500; /* Немного тоньше */
+        margin-top: 45px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color-light);
+        color: var(--dark-gray);
+    }
+
+    .hotel-main-info p { /* Стиль основного текста описания */
+        line-height: 1.8;
+        font-size: 1rem;
+        color: var(--dark-gray);
+    }
+
+    /* Список удобств */
+    .amenities-list {
+        columns: 2;
+        gap: 25px;
+        font-size: 0.95rem;
+        list-style: none;
+        padding: 0;
+        margin-top: 5px; /* Уменьшим отступ от H2 */
+    }
+    .amenities-list li {
+        margin-bottom: 18px; /* Больше вертикальный отступ */
+        gap: 12px;
+        display: flex; /* Added for consistency, was present in old */
+        align-items: center; /* Added for consistency, was present in old */
+        color: var(--text-color); /* Added for consistency, was present in old */
+    }
+    .amenities-list i { /* Font Awesome */
+        color: var(--accent-gold);
+        font-size: 1.3rem; /* Чуть крупнее иконки */
+        width: 25px;
+        text-align: center;
+    }
+    .amenities-list img { /* Added from old styles for completeness if used */
+        height: 18px;
+        opacity: 0.8;
+    }
+
+
+    /* --- Блок Бронирования (Sidebar) --- */
+    .booking-section {
+        flex: 0 0 350px; /* Чуть шире */
+        background-color: var(--white-color); /* Светлый фон */
+        color: var(--text-color); /* Темный текст */
+        padding: 30px;
+        border-radius: var(--border-radius); /* Was --border-radius-lg, now smaller */
+        border: 1px solid var(--border-color-light); /* Светлая граница */
+        box-shadow: var(--box-shadow-sm); /* Легкая тень, was --box-shadow-lg */
+        position: sticky;
+        top: 90px;
+    }
+
+    .booking-section h2 {
+        color: var(--dark-gray); /* Темный заголовок */
+        font-size: 1.5rem; /* Крупнее */
+        font-family: var(--font-family-serif);
+        border-bottom: 1px solid var(--border-color-light); /* Added border style, was present in old */
+        border-bottom-color: var(--border-color-light);
+        margin-top: 0; /* Added for consistency, was present in old */
+        margin-bottom: 25px;
+        padding-bottom: 18px;
+        font-weight: 500; /* Was 600 */
+    }
+
+    .room-option {
+        border: 1px solid var(--border-color-light); /* Was #495057 (darker) */
+        background-color: #fff; /* Чисто белый фон карточки номера, was rgba(255,255,255,0.05) */
+        padding: 20px; /* Больше паддинг, was 15px */
+        margin-bottom: 20px; /* Was 15px */
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: box-shadow 0.2s ease; /* Was background-color transition */
+    }
+    .room-option:hover {
+         box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Was background-color change */
+    }
+
+    .room-option h3 {
+        color: var(--text-color); /* Was --white-color */
+        font-size: 1.2rem; /* Was 1.15rem */
+        font-weight: 600; /* Was 500 */
+        font-family: var(--font-family-sans-serif); /* Обычный шрифт для названия номера */
+        margin-top: 0; /* Added for consistency, was present in old */
+        margin-bottom: 8px; /* Added for consistency, was present in old */
+    }
+    .room-option p {
+        font-size: 0.9rem; /* Was 0.88rem */
+        color: var(--secondary-color);
+        margin-bottom: 12px; /* Was 10px */
+    }
+    .room-option .price {
+        display: block; /* Added for consistency, was present in old */
+        color: var(--accent-gold); /* Золотая цена, was --warning-color */
+        font-size: 1.4rem; /* Was 1.3rem */
+        font-weight: 600;
+        margin-bottom: 18px; /* Was 15px */
+    }
+    /* Кнопка бронирования в блоке */
+    .room-option .cta-button {
+        width: 100%;
+        padding: 10px 20px;
+        border-radius: var(--border-radius); /* Обычное скругление, was 5px */
+        font-size: 0.95rem;
+        text-transform: none; /* Added for consistency, was present in old */
+        box-shadow: none; /* Added for consistency, was present in old */
+        background: var(--accent-gold); /* Added for consistency, was present in old */
+    }
+    .room-option .cta-button:hover { /* Added from old styles for completeness */
+        background: var(--accent-gold-dark);
+        transform: none;
+    }
+
+
+    /* --- Секция Отзывов --- */
+    .hotel-reviews {
+        background-color: var(--white-color);
+        padding: 40px;
+        border-radius: var(--border-radius); /* Was --border-radius-lg */
+        margin-top: 50px;
+        border: 1px solid var(--border-color-light);
+        box-shadow: var(--box-shadow-sm); /* Was --box-shadow */
+    }
+    .hotel-reviews h2 {
+        font-size: 1.8rem; /* Was 1.7rem */
+        margin-top: 0; /* Added for consistency, was present in old */
+        margin-bottom: 30px;
+        font-family: var(--font-family-serif);
+        font-weight: 500; /* Was 600 */
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color-light);
+        color: var(--dark-gray); /* Added for consistency, was present in old */
+    }
+
+    /* Форма добавления отзыва */
+    .add-review-form {
+        margin-bottom: 40px; /* Was 30px */
+        padding: 25px; /* Was 20px */
+        background-color: var(--light-gray); /* Was --bg-light */
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color-light);
+    }
+    .add-review-form h3 {
+        font-size: 1.3rem;
+        font-weight: 500; /* Was 600 */
+        font-family: var(--font-family-sans-serif);
+        margin-top: 0; /* Added for consistency, was present in old */
+        margin-bottom: 20px; /* Was 15px */
+        color: var(--dark-gray); /* Added for consistency, was present in old */
+    }
+    .add-review-form .form-group { margin-bottom: 15px; }
+    .add-review-form .form-group label { /* Added from old styles for completeness */
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 0.9rem; /* Added from new styles */
+        color: var(--dark-gray);
+    }
+    .add-review-form select, .add-review-form textarea {
+        width: 100%; /* Added for consistency, was present in old */
+        background-color: #fff; /* Белый фон полей, was --white-color */
+        border: 1px solid var(--border-color); /* Was --border-color-light */
+        border-radius: var(--border-radius-sm); /* Was --border-radius */
+        font-size: 0.95rem; /* Added for consistency, was present in old */
+    }
+    .add-review-form select { padding: 10px 12px; /* Was 8px 12px */ }
+    .add-review-form textarea { padding: 10px 12px; min-height: 100px; /* Was 80px */ }
+    .add-review-form button { border-radius: 5px; } /* This likely refers to a .cta-button if used inside */
+
+    /* Отдельный отзыв */
+    .review {
+        border-bottom: 1px solid var(--medium-gray); /* Was --border-color-light */
+        padding: 25px 0;
+    }
+    .review:first-of-type { padding-top: 0; }
+    .review:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .review-header {
+        margin-bottom: 12px; /* Was 10px */
+        display: flex; /* Added for consistency, was present in old */
+        justify-content: space-between; /* Added for consistency, was present in old */
+        align-items: center; /* Added for consistency, was present in old */
+        flex-wrap: wrap; /* Added for consistency, was present in old */
+        gap: 10px; /* Added for consistency, was present in old */
+    }
+    .review .author {
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--dark-gray);
+    }
+    .review .date {
+        font-size: 0.8rem;
+        color: var(--secondary-color);
+    }
+    .review .rating {
+        font-size: 1rem;
+        letter-spacing: 1px; /* Немного раздвинем звезды */
+    }
+
+    .review p { /* Old rule, might conflict with .review p.review-body. Keeping for now. */
+        margin-bottom: 8px;
+        line-height: 1.8;
+        font-size: 1rem;
+        color: var(--text-color);
+    }
+    .review p.review-body { /* Класс добавлен в HTML */
+        line-height: 1.75;
+        font-size: 0.98rem;
+        color: var(--text-color);
+        margin: 0 0 8px 0; /* Убираем верхний отступ */
+    }
+    .review small { /* Verified badge */
+        color: var(--success-color); /* Зеленый, was --accent-teal */
+        font-weight: 500; /* Was 600 */
+        display: block; /* Added for consistency, was present in old */
+        margin-top: 8px; /* Added for consistency, was present in old */
+        font-size: 0.8rem; /* Added for consistency, was present in old */
+    }
+
+
+    /* --- Страницы аккаунта (Регистрация/Вход) --- */
+    .signup-container, .login-container {
+        padding-top: 50px !important;
+        padding-bottom: 70px !important;
+        max-width: 500px !important;
+        margin: auto;
+    }
+    .signup-container h1, .login-container h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-family: var(--font-family-serif);
+        font-weight: 600;
+        color: var(--dark-gray);
+    }
+    .signup-container p, .login-container p {
+        text-align: center;
+        margin-bottom: 25px;
+        color: var(--secondary-color);
+        font-size: 0.95rem;
+    }
+    .styled-form .form-group { margin-bottom: 18px; }
+    .styled-form label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: var(--dark-gray);
+    }
+    .styled-form input[type="text"],
+    .styled-form input[type="email"],
+    .styled-form input[type="password"],
+    .styled-form input[type="tel"],
+    .styled-form input[type="date"],
+    .styled-form input[type="number"] {
+        display: block;
+        width: 100%;
+        background-color: var(--bg-light); /* Светлый фон для полей */
+        border: 1px solid var(--border-color-light);
+        border-radius: var(--border-radius);
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--text-color);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out, background-color .15s ease-in-out;
+    }
+    .styled-form input:focus {
+        background-color: var(--white-color);
+        border-color: var(--accent-gold);
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(218, 165, 32, .25);
+    }
+    .styled-form .form-text, .styled-form .password-help-text {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.8rem;
+        color: var(--secondary-color);
+    }
+    .styled-form .invalid-feedback {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.8rem;
+        color: var(--danger-color);
+    }
+    .password-help-text ul {
+        list-style: disc;
+        margin: 5px 0 0 20px;
+        padding-left: 0;
+    }
+    .password-help-text li { margin-bottom: 3px; }
+
+    .styled-form .cta-button {
+        margin-top: 25px;
+        width: 100%;
+        padding: 12px;
+        font-size: 1.05rem;
+    }
+
+
+    /* --- Личный кабинет --- */
+    .account-page { padding: 40px 0; }
+    .account-container h1 { /* Заголовок страницы ЛК, например "Мой аккаунт" */
+        margin-bottom: 30px;
+        font-weight: 600;
+        font-family: var(--font-family-serif);
+        color: var(--dark-gray);
+    }
+    .account-layout {
+        display: flex;
+        gap: 40px;
+        background-color: var(--white-color);
+        padding: 40px;
+        border-radius: var(--border-radius-lg);
+        border: none;
+        box-shadow: var(--box-shadow-lg);
+    }
+    .account-nav { flex: 0 0 240px; }
+    .account-nav ul { list-style: none; padding: 0; margin: 0; }
+    .account-nav li a, .account-nav-logout-button {
+        display: block;
+        padding: 12px 18px;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--dark-gray);
+        border-left: 3px solid transparent; /* Полоска слева */
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        margin-bottom: 5px;
+        transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
+        text-decoration: none;
+        width: 100%;
+        text-align: left;
+        background: none; /* Для кнопки */
+        border-top: none; border-right: none; border-bottom: none; /* Для кнопки */
+        cursor: pointer; /* Для кнопки */
+        font-family: var(--font-family-sans-serif); /* Убедимся, что шрифт как у ссылок */
+    }
+    .account-nav li a:hover, .account-nav-logout-button:hover {
+        background-color: var(--bg-light);
+        color: var(--accent-gold-dark);
+        border-left-color: var(--accent-gold-dark);
+        text-decoration: none;
+    }
+    .account-nav li a.active-tab {
+        background-color: var(--bg-light);
+        color: var(--accent-gold);
+        border-left-color: var(--accent-gold);
+        font-weight: 600;
+    }
+
+    .account-content { flex: 1; min-width: 0; }
+    .account-content h2 { /* Заголовки секций в ЛК: "Мои бронирования", "Настройки профиля" */
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        font-family: var(--font-family-serif);
+        font-weight: 600;
+        color: var(--dark-gray);
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color-light);
+    }
+
+    /* Улучшим вид booking-item в ЛК */
+    .booking-list .booking-item {
+        border: 1px solid var(--border-color-light);
+        background-color: #fff; /* Белый фон */
+        box-shadow: var(--box-shadow-sm);
+        border-radius: var(--border-radius);
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    .booking-item h3 {
+        margin: 0 0 10px;
+        font-size: 1.25rem;
+        font-weight: 600; /* Заголовок бронирования */
+        color: var(--accent-gold); /* Используем акцентный цвет */
+    }
+    .booking-item p {
+        margin: 6px 0;
+        font-size: 0.95rem;
+        color: var(--text-color);
+    }
+    .booking-item p strong { color: var(--dark-gray); }
+    .booking-item p small { color: var(--secondary-color); } /* Для дат и т.п. */
+    .booking-item .status-confirmed { color: var(--success-color); font-weight: bold; }
+    .booking-item .status-pending { color: var(--warning-color); font-weight: bold; }
+    .booking-item .status-cancelled { color: var(--danger-color); font-weight: bold; }
+    .booking-item .status-completed { color: var(--secondary-color); }
+
+    .booking-item .cta-button {
+        margin-right: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        text-transform: none;
+        box-shadow: none;
+        background: var(--accent-gold);
+        padding: 8px 15px; /* Поменьше кнопки */
+        font-size: 0.9rem;
+    }
+    .booking-item .cta-button:hover {
+        background: var(--accent-gold-dark);
+        transform: none;
+    }
+
+    /* --- Стили для Секции "Почему выбирают нас?" --- */
+    .why-choose-us {
+        background-color: var(--bg-dark); /* Используем переменную */
+        color: var(--text-color-light);
+        padding: 60px 0;
+    }
+
+    .why-choose-us .section-header {
+        text-align: center;
+        margin-bottom: 50px; /* Больше отступ */
+    }
+
+    .why-choose-us .section-header h2 {
+        color: #fff;
+        margin-bottom: 15px;
+        font-size: 2rem;
+    }
+
+    .why-choose-us .section-header p {
+        color: var(--secondary-color);
+        max-width: 650px;
+        margin: auto;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+
+    .feature-item {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 30px; /* Больше паддинг */
+        border-radius: var(--border-radius);
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .feature-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        margin-bottom: 20px;
+        font-size: 2.8rem; /* Больше иконка */
+        color: var(--accent-gold);
+        line-height: 1;
+    }
+
+    .feature-item h3 {
+        color: #fff;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        font-family: var(--font-family-sans-serif); /* Sans-serif для подзаголовков */
+        font-weight: 600;
+    }
+
+    .feature-item p {
+        font-size: 0.9rem;
+        color: var(--secondary-color);
+        line-height: 1.7;
+    }
+
+
+    /* --- Стили для Секции "Призыв к действию" --- */
+    .cta-section {
+        padding: 60px 0 80px; /* Отступы */
+        background-color: var(--bg-light); /* Светлый фон секции */
+    }
+
+    .cta-content {
+        /* Яркий градиент */
+        background: linear-gradient(135deg, var(--accent-teal), var(--primary-color));
+        border-radius: var(--border-radius-lg);
+        padding: 60px 70px; /* Больше паддинги */
+        display: flex;
+        align-items: center;
+        gap: 50px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: var(--box-shadow-lg);
+        color: #fff; /* Весь текст белый по умолчанию */
+    }
+    /* Адаптивность для CTA - размещаем здесь, так как это часть стилей компонента */
+    @media (max-width: 992px) {
+        .cta-content {
+            flex-direction: column;
+            text-align: center;
+            padding: 40px 30px;
+        }
+        .cta-image { display: none !important; } /* Скрываем картинку на мобильных */
+        .cta-buttons { text-align: center; }
+    }
+
+
+    .cta-text {
+        flex: 1;
+        z-index: 2;
+    }
+
+    .cta-text h2 {
+        color: #fff;
+        font-size: 2.5rem; /* Крупнее заголовок */
+        margin-bottom: 20px;
+        line-height: 1.3;
+        font-family: var(--font-family-serif); /* Оставим serif */
+    }
+
+    .cta-text p {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 35px;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+
+    .cta-buttons .cta-button {
+        box-shadow: none; /* Убираем тень у кнопок внутри */
+        padding: 12px 30px;
+        font-size: 1rem;
+        transition: background-color 0.2s ease, color 0.2s ease; /* Упрощаем transition */
+    }
+    /* Первая кнопка (Создать аккаунт) */
+    .cta-buttons .cta-button:first-child {
+        background: var(--white-color);
+        color: var(--primary-color-dark);
+        margin-right: 15px;
+    }
+    .cta-buttons .cta-button:first-child:hover {
+        background: var(--bg-light);
+        color: var(--primary-color-dark);
+    }
+    /* Вторая кнопка (Изучить отели) */
+    .cta-buttons .cta-button:last-child {
+        background: transparent;
+        border: 2px solid #fff;
+        color: #fff;
+    }
+    .cta-buttons .cta-button:last-child:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Блок с картинкой (если решите добавить) */
+    .cta-image {
+        flex: 0 0 40%;
+        max-width: 450px; /* Макс ширина картинки */
+        z-index: 1;
+         /* Добавим эффект, чтобы картинка не просто стояла */
+         transform: translateX(20px) scale(1.1);
+         opacity: 0.5;
+    }
+    .cta-image img {
+        border-radius: var(--border-radius);
+        width: 100%;
+        display: block;
+    }
+
+
+    /* --- Футер --- */
+    .site-footer {
+        background: var(--bg-dark); /* Темный футер */
+        color: var(--secondary-color);
+        padding: 35px 0;
+        margin-top: 80px;
+        text-align: center;
+        font-size: 0.85rem;
+        border-top: 1px solid #343a40;
+    }
+    .footer-nav { margin-top: 8px; }
+    .footer-nav a {
+        color: var(--secondary-color);
+        margin: 0 8px;
+        font-size: 0.85rem; /* Чуть крупнее */
+    }
+    .footer-nav a:hover { color: var(--accent-gold); }
+
+
+    /* --- Анимации --- */
+    @keyframes fadeInSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px); /* Начинаем чуть ниже */
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0); /* Поднимаемся на место */
+        }
+    }
+
+
+    /* --- Адаптивность (Основные моменты сохраняются, но могут требовать доп. настроек) --- */
+    @media (max-width: 992px) {
+        .results-container { flex-direction: column; }
+        .filters-panel {
+            position: static;
+            flex: 0 0 auto;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        .hotel-content-wrapper { flex-direction: column; }
+        .booking-section {
+            position: static;
+            margin-top: 30px;
+            flex-basis: auto; /* Reset flex-basis for stacking */
+            width: 100%; /* Take full width when stacked */
+        }
+        .account-layout { flex-direction: column; padding: 25px;}
+        .account-nav {
+            flex: 0 0 auto;
+            width: 100%;
+            border-bottom: 1px solid var(--border-color-light);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .account-nav ul { display: flex; flex-wrap: wrap; gap: 5px; }
+        .account-nav li a, .account-nav-logout-button {
+            padding: 10px 15px; /* Немного изменим паддинги для мобильных */
+            width: auto;
+            border-left-width: 2px; /* Тоньше полоска */
+            margin-left: -2px;
+        }
+        .amenities-list { columns: 1; }
+    }
+
+    @media (max-width: 768px) {
+        .header-container { position: relative; }
+        .main-nav, .header-controls:not(.is-mobile-active) { display: none; } /* Скрываем, если не активно мобильное меню */
+        .mobile-menu-toggle { display: block; }
+
+        /* Стили мобильного меню */
+        .header-controls.is-mobile-active {
+            display: flex !important;
+            position: absolute;
+            top: calc(100% + 1px); /* Сразу под шапкой */
+            left: 0; right: 0; /* На всю ширину */
+            background-color: var(--bg-dark); /* Темное меню */
+            flex-direction: column;
+            padding: 15px;
+            box-shadow: var(--box-shadow-lg);
+            border-top: 1px solid #495057;
+            width: 100%; /* Ширина меню */
+            align-items: stretch;
+            gap: 5px;
+            z-index: 1020; /* Ниже шапки, но выше остального */
+        }
+        .header-controls.is-mobile-active .language-switcher,
+        .header-controls.is-mobile-active .currency-switcher,
+        .header-controls.is-mobile-active a,
+        .header-controls.is-mobile-active form,
+        .header-controls.is-mobile-active .login-link {
+            margin: 5px 0;
+            text-align: left;
+            color: var(--text-color-light); /* Светлый текст в меню */
+            padding: 10px 15px;
+            display: block; /* Чтобы занимали всю ширину */
+            border-radius: var(--border-radius);
+        }
+        .header-controls.is-mobile-active a:hover,
+        .header-controls.is-mobile-active .login-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-gold);
+        }
+        .header-controls.is-mobile-active select { width: 100%; margin-bottom: 10px; }
+
+
+        .hero h1 { font-size: 2.2rem; }
+        .search-form { flex-direction: column; align-items: stretch; padding: 20px; }
+        .search-form .form-group, .search-form .cta-button { min-width: auto; flex-basis: auto; max-width: none; }
+
+        .result-item { flex-direction: column; }
+        .result-item-image {
+            height: 250px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            flex-basis: auto; /* Сброс flex-basis */
+            width: 100%;
+        }
+        .result-item-info { padding: 20px; }
+        .result-item-info h2 { font-size: 1.4rem; }
+        .amenities-preview { margin-top: 15px; }
+
+        .result-item-price {
+            border-top: 1px solid var(--border-color-light);
+            border-left: none;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+            text-align: left;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            flex-basis: auto; /* Сброс flex-basis */
+        }
+        .result-item-price .price { font-size: 1.4rem; margin-bottom: 10px; }
+        .result-item-price .cta-button { width: 100%; margin-top: 10px; }
+
+        .hotel-main-info h1 { font-size: 2rem; }
+        .hotel-main-info h2 { font-size: 1.5rem; }
+        /* .booking-section { flex-basis: auto; padding: 25px; } */ /* Already handled by 992px */
+    }
+
+    @media (max-width: 576px) {
+        .hero { padding: 80px 0 100px; }
+        .hero h1 { font-size: 1.8rem; }
+        .cta-button { padding: 10px 22px; font-size: 0.9rem; }
+        .cta-button.small { padding: 7px 15px; font-size: 0.75rem; }
+
+        /* .hotel-gallery .main-photo { height: 350px; } */ /* Style for old gallery, now hidden */
+        /* .hotel-gallery .thumbnails { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); } */ /* Style for old gallery, now hidden */
+        /* .hotel-gallery .thumbnails img { height: 75px; } */ /* Style for old gallery, now hidden */
+        .routes-grid, .hotel-grid { grid-template-columns: 1fr; } /* Одна колонка */
+
+        .result-item-image { height: 200px; }
+        .pagination a, .pagination span { padding: 6px 10px; font-size: 0.85rem; }
+        .account-content h2 { font-size: 1.5rem; }
+        .booking-item h3 { font-size: 1.1rem; }
+
+        .hotel-detail-page { padding-top: 30px; padding-bottom: 40px; }
+        .hero-image-overlay-content h1 { font-size: 1.8rem; } /* Adjust new hero h1 for mobile */
+        .hotel-main-info h1 { font-size: 1.8rem; } /* Old h1, if still used and visible */
+        .hotel-main-info h2 { font-size: 1.3rem; }
+        .booking-section { padding: 20px; }
+        .hotel-reviews { padding: 25px; }
+        .add-review-form { padding: 20px; }
+    }

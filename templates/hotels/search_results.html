@@ -1,0 +1,128 @@
+{# templates/hotels/search_results.html #}
+{% extends "base.html" %}
+{% load static i18n %} {# <--- Добавлен i18n #}
+
+{% block title %}{% translate "Отели в Бишкеке - Результаты поиска" %}{% endblock %} {# Перевод #}
+
+{% block content %}
+<div class="search-results-page">
+    <div class="container results-container">
+        <aside class="filters-panel">
+            <h2>{% translate "Фильтры" %}</h2> {# Перевод #}
+            <form method="GET" action="{% url 'hotel_list' %}">
+                <div class="filter-group">
+                     <h3>{% translate "Название" %}</h3> {# Перевод #}
+                     <input type="text" name="hotel_name" placeholder="{% translate 'Введите название...' %}" value="{{ hotel_name|default:'' }}" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"> {# Перевод placeholder #}
+                 </div>
+                 <div class="filter-group">
+                    <h3>{% translate "Цена за ночь (KGS)" %}</h3> {# Перевод #}
+                     <label>{% translate "От" %}: <input type="number" name="price_min" min="0" placeholder="3000" value="{{ price_min|default:'' }}"></label> {# Перевод #}
+                     <label>{% translate "До" %}: <input type="number" name="price_max" min="0" placeholder="50000" value="{{ price_max|default:'' }}"></label> {# Перевод #}
+                </div>
+                 <div class="filter-group">
+                    <h3>{% translate "Звезды" %}</h3> {# Перевод #}
+                    <label><input type="checkbox" name="stars" value="5" {% if '5' in selected_stars %}checked{% endif %}> ★★★★★</label>
+                    <label><input type="checkbox" name="stars" value="4" {% if '4' in selected_stars %}checked{% endif %}> ★★★★☆</label>
+                    <label><input type="checkbox" name="stars" value="3" {% if '3' in selected_stars %}checked{% endif %}> ★★★☆☆</label>
+                </div>
+                 <div class="filter-group">
+                    <h3>{% translate "Основные Удобства" %}</h3> {# Перевод #}
+                    {% for amenity in all_amenities %}
+                        <label>
+                            <input type="checkbox" name="amenities" value="{{ amenity.pk }}" {% if amenity.pk in selected_amenities %}checked{% endif %}>
+                            {{ amenity.name }} {# Имя удобства должно переводиться из модели #}
+                        </label>
+                    {% endfor %}
+                </div>
+                {% if checkin_date_str %}<input type="hidden" name="checkin" value="{{ checkin_date_str }}">{% endif %}
+                {% if checkout_date_str %}<input type="hidden" name="checkout" value="{{ checkout_date_str }}">{% endif %}
+                {% if guests_count_str %}<input type="hidden" name="guests" value="{{ guests_count_str }}">{% endif %}
+
+                <button type="submit" class="apply-filters-button">{% translate "Применить фильтры" %}</button> {# Перевод #}
+            </form>
+        </aside>
+
+        <section class="results-list">
+            {# Использование blocktranslate для множественного числа #}
+            <h1>
+                {% blocktranslate count count=hotels_page.paginator.count %}
+                Найдено: {{ count }} вариант
+                {% plural %}
+                Найдено: {{ count }} вариантов
+                {% endblocktranslate %}
+            </h1>
+
+            {% if hotels_page %}
+                {% for hotel in hotels_page %}
+                <article class="result-item hotel-card">
+                     {% if hotel.image_card %}
+                        <img src="{{ hotel.image_card.url }}" alt="{{ hotel.name }}" class="result-item-image">
+                     {% elif hotel.main_image %}
+                          <img src="{{ hotel.main_image.url }}" alt="{{ hotel.name }}" class="result-item-image">
+                     {% else %}
+                         <img src="{% static 'images/placeholder-hotel.png' %}" alt="{% translate 'Нет фото' %}" class="result-item-image"> {# Перевод #}
+                     {% endif %}
+                    <div class="result-item-info">
+                        <h2><a href="{{ hotel.get_absolute_url }}">{{ hotel.name }}</a></h2>
+                        <div class="rating">{{ hotel.get_rating_display }}</div> {# Должно переводиться из модели #}
+                        <p class="location">{{ hotel.address }}</p>
+                        {% if hotel.amenities.all %}
+                        <ul class="amenities-preview">
+                             {% for amenity in hotel.amenities.all|slice:":5" %}
+                            <li>
+                                {% if amenity.icon %} <i class="{{ amenity.icon }}"></i> {% endif %}
+                                <span title="{{ amenity.name }}">{{ amenity.name|truncatechars:15 }}</span> {# Имя переводится из модели #}
+                            </li>
+                             {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="result-item-price">
+                        {% if hotel.min_price %}
+                            <span class="price">
+                                {% translate "от" %} {{ hotel.min_price|floatformat:0 }} KGS
+                            </span>
+                        {% else %}
+                             <span class="price">{% translate "Цена не указана" %}</span> {# Перевод #}
+                        {% endif %}
+                        <a href="{{ hotel.get_absolute_url }}?{{ query_params }}" class="cta-button small">{% translate "Подробнее" %}</a> {# Перевод #}
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                <p>{% translate "По вашему запросу отелей не найдено. Попробуйте изменить параметры поиска." %}</p> {# Перевод #}
+            {% endif %}
+
+            {% if hotels_page.has_other_pages %}
+            <nav class="pagination">
+                {% if hotels_page.has_previous %}
+                    <a href="?page={{ hotels_page.previous_page_number }}&{{ query_params }}" class="prev">{% translate "« Назад" %}</a> {# Перевод #}
+                {% else %}
+                    <span class="disabled prev">{% translate "« Назад" %}</span> {# Перевод #}
+                {% endif %}
+                {% for i in hotels_page.paginator.page_range %}
+                    {% if hotels_page.number == i %}
+                        <a href="?page={{ i }}&{{ query_params }}" class="active">{{ i }}</a>
+                    {% else %}
+                         <a href="?page={{ i }}&{{ query_params }}">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if hotels_page.has_next %}
+                    <a href="?page={{ hotels_page.next_page_number }}&{{ query_params }}" class="next">{% translate "Вперед »" %}</a> {# Перевод #}
+                {% else %}
+                    <span class="disabled next">{% translate "Вперед »" %}</span> {# Перевод #}
+                {% endif %}
+            </nav>
+            {% endif %}
+
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{# Стили для пагинации остаются без изменений #}
+{% block extra_css %}
+<style>
+    /* ... стили пагинации ... */
+</style>
+{% endblock %}

@@ -1,0 +1,44 @@
+{# templates/accounts/bookings.html #}
+{% extends "accounts/base_account.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Мои бронирования" %}{% endblock %}
+
+{% block account_content %}
+    <h2>{% translate "Мои бронирования" %}</h2>
+
+    {% if bookings %}
+        <div class="booking-list">
+            {% for booking in bookings %}
+            <article class="booking-item" style="border: 1px solid #eee; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                <h3>{{ booking.room_type.hotel.name }} - {{ booking.room_type.name }}</h3>
+                {# ИСПРАВЛЕННЫЙ БЛОК ПЛЮРАЛИЗАЦИИ #}
+                <p>
+                    {% translate "Даты" %}: {{ booking.check_in_date|date:"d.m.Y" }} - {{ booking.check_out_date|date:"d.m.Y" }}
+                    ({% blocktranslate count nights=booking.calculate_nights %}{{ nights }} ночь{% plural %}{{ nights }} ночи{% endblocktranslate %})
+                </p>
+                <p>{% blocktranslate with count=booking.guests_count %}Гостей: {{ count }}{% endblocktranslate %}</p>
+                <p>{% translate "Статус" %}: <span class="status-{{ booking.status }}" style="font-weight: bold;
+                    {% if booking.status == 'confirmed' %} color: #28a745;
+                    {% elif booking.status == 'pending' %} color: #ffc107;
+                    {% elif booking.status == 'cancelled' %} color: #dc3545;
+                    {% elif booking.status == 'completed' %} color: #6c757d;
+                    {% endif %}">
+                    {{ booking.get_status_display }}</span></p>
+                 <p>{% translate "Стоимость" %}: {{ booking.total_price|default:"0"|floatformat:0 }} KGS</p>
+                 <p><small>{% translate "Создано" %}: {{ booking.created_at|date:"d.m.Y H:i" }}</small></p>
+
+                 {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                     <a href="#" class="cta-button small" style="background-color: #dc3545;">{% translate "Отменить (TODO)" %}</a>
+                 {% elif booking.status == 'completed' %}
+                      <a href="#" class="cta-button small">{% translate "Оставить отзыв (TODO)" %}</a>
+                      <a href="{{ booking.room_type.hotel.get_absolute_url }}?checkin={{ booking.check_in_date|date:'Y-m-d' }}&checkout={{ booking.check_out_date|date:'Y-m-d' }}&guests={{ booking.guests_count }}" class="cta-button small" style="background-color: #6c757d;">{% translate "Повторить" %}</a>
+                 {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>{% translate "У вас пока нет бронирований." %}</p>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,212 @@
+{# templates/hotels/hotel_detail.html #}
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{{ hotel.name }} - {% translate "Премиум Отели Бишкека" %}{% endblock %}
+
+{% block extra_head %}
+    {# Ссылка на CSS Leaflet #}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    {# Фикс для box-sizing внутри Leaflet, если он конфликтует с вашими глобальными стилями #}
+    <style>
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip-container { box-sizing: content-box; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div> {# Общий контейнер страницы #}
+
+    {# --- Верхнее изображение во всю ширину --- #}
+    <section class="hotel-hero-image">
+        {% if hotel.image_large %}
+            <img src="{{ hotel.image_large.url }}" alt="{{ hotel.name }}">
+        {% elif hotel.main_image %}
+             <img src="{{ hotel.main_image.url }}" alt="{{ hotel.name }}">
+        {% else %}
+             <div class="main-photo-placeholder"> {# Плейсхолдер, если картинок нет #}
+                 <span>{% translate 'Изображение отеля' %}</span>
+             </div>
+        {% endif %}
+
+        {# Название отеля и мета-информация поверх изображения #}
+        <div class="hero-image-overlay-content">
+            <div class="container"> {# Используем стандартный .container для ограничения ширины текста #}
+                 <h1>{{ hotel.name }}</h1>
+                 <div class="hotel-meta">
+                     <span class="location"><i class="fas fa-map-marker-alt"></i> {{ hotel.address }}</span>
+                     <span class="rating"><i class="fas fa-star"></i> {{ hotel.rating }}/5</span>
+                 </div>
+            </div>
+        </div>
+    </section>
+    {# --- Конец Верхнего изображения --- #}
+
+    {# --- Основной Контент (ВНУТРИ контейнера) --- #}
+    <div class="container" style="padding-top: 40px;"> {# Отступ сверху для основного контента #}
+        <div class="hotel-content-main-wrapper"> {# Обертка для белого фона и тени #}
+
+            <div class="hotel-content-wrapper"> {# Колонки для описания и бронирования #}
+                <section class="hotel-main-info">
+                    <h2>{% translate "Об отеле" %}</h2>
+                    <p>{{ hotel.description|linebreaks }}</p>
+
+                    {% if hotel.amenities.all %}
+                    <h2>{% translate "Удобства" %}</h2>
+                    <ul class="amenities-list grid-view"> {# Добавлен класс grid-view для стилизации сеткой #}
+                        {% for amenity in hotel.amenities.all %}
+                        <li>
+                            {% if amenity.icon %}<i class="{{ amenity.icon }}"></i>{% endif %}
+                            <span>{{ amenity.name }}</span> {# Имя удобства переводится из модели #}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    {# --- БЛОК КАРТЫ --- #}
+                    {% if hotel.latitude and hotel.longitude %} {# Показываем карту, только если есть координаты #}
+                        <h2>{% translate "Расположение на карте" %}</h2>
+                        <div id="hotel-map"> {# Стили для этого ID должны быть в style.css #}
+                            {# JavaScript инициализирует карту здесь #}
+                        </div>
+                    {% endif %}
+                    {# --- КОНЕЦ БЛОКА КАРТЫ --- #}
+
+                </section>
+
+                <aside class="booking-section simple-booking">
+                     <div class="booking-price-header">
+                        {% with hotel.room_types.all|first as first_room %}
+                            {% if first_room %}
+                                <span class="price">{% translate "от" %} {{ first_room.base_price|floatformat:0 }} KGS</span>
+                            {% else %}
+                                <span class="price">{% translate "Цен нет" %}</span>
+                            {% endif %}
+                        {% endwith %}
+                        <span class="per-night">/ {% translate "ночь" %}</span>
+                     </div>
+
+                    <h2>{% translate "Номера и Цены" %}</h2>
+                     {% if room_types %}
+                        {% for room in room_types|slice:":3" %} {# Показываем несколько номеров #}
+                        <div class="room-option-simple"> {# Используем упрощенный вариант карточки номера #}
+                            <h3>
+                                <a href="{% url 'create_booking' room_type_id=room.pk %}?{{ request.GET.urlencode }}">
+                                    {{ room.name }} {# Имя переводится из модели #}
+                                </a>
+                            </h3>
+                            <span class="price">{{ room.base_price|floatformat:0 }} KGS</span>
+                        </div>
+                        {% endfor %}
+                        {% if room_types|length > 3 %}
+                            <a href="#all-rooms-placeholder" class="view-all-rooms">{% translate "Посмотреть все номера" %}</a>
+                        {% endif %}
+                     {% else %}
+                        <p>{% translate "Информация о номерах временно недоступна." %}</p>
+                     {% endif %}
+
+                     <a href="#" class="cta-button book-now-sidebar">{% translate "Забронировать сейчас" %}</a> {# Общая кнопка, функционал TODO #}
+                     {# <p class="availability-info">{% translate "5 номеров свободно" %}</p> #} {# Это требует динамики #}
+                </aside>
+            </div>
+        </div> {# Конец hotel-content-main-wrapper #}
+
+        {# Секция Отзывов #}
+        <section class="hotel-reviews"> {# Стили для .hotel-reviews должны быть в style.css #}
+            <h2>{% translate "Отзывы Гостей" %}</h2>
+            {% if user.is_authenticated %}
+                {% if can_add_review %}
+                    <div class="add-review-form">
+                        <h3>{% translate "Оставить отзыв" %}</h3>
+                        <form method="post" action="{% url 'add_review' hotel_id=hotel.pk %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ review_form.rating.label_tag }}
+                                {{ review_form.rating }}
+                                {% if review_form.rating.errors %}<div class="invalid-feedback">{{ review_form.rating.errors }}</div>{% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ review_form.text.label_tag }}
+                                {{ review_form.text }}
+                                {% if review_form.text.errors %}<div class="invalid-feedback">{{ review_form.text.errors }}</div>{% endif %}
+                            </div>
+                            <button type="submit" class="cta-button small">{% translate "Отправить отзыв" %}</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <p class="already-reviewed-message">{% translate "Вы уже оставили отзыв для этого отеля или не можете оставить отзыв." %}</p>
+                {% endif %}
+            {% else %}
+                 {% url 'login' as login_url_val %}
+                 <p>{% blocktranslate %}Для того чтобы оставить отзыв, пожалуйста, <a href="{{ login_url_val }}?next={{ request.path }}">войдите</a>.{% endblocktranslate %}</p>
+            {% endif %}
+
+            {% if reviews %}
+                {% for review in reviews %}
+                <article class="review">
+                    <div class="review-header">
+                        <span class="author">{{ review.author.username }}</span>
+                        <span class="date">{{ review.created_at|date:"d.m.Y H:i" }}</span>
+                        <span class="rating">
+                            {% for i in '12345' %}
+                                {% if forloop.counter <= review.rating %}★{% else %}<span style="color: #ccc;">☆</span>{% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <p class="review-body">{{ review.text|linebreaksbr }}</p>
+                    {% if review.is_verified %}
+                    <small class="verified-review-badge">{% translate "Верифицированный отзыв" %}</small>
+                    {% endif %}
+                </article>
+                {% endfor %}
+            {% else %}
+                <p>{% translate "Отзывов пока нет. Станьте первым!" %}</p>
+            {% endif %}
+        </section>
+
+    </div> {# Конец .container для основного контента #}
+</div> {# Конец общего блока #}
+{% endblock %}
+
+{% block extra_scripts %}
+    {# Скрипт Leaflet JS #}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    {# Скрипт инициализации карты #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const lat = {{ hotel.latitude|stringformat:".7f"|default:"null" }};
+            const lon = {{ hotel.longitude|stringformat:".7f"|default:"null" }};
+            const hotelName = "{{ hotel.name|escapejs }}";
+            const hotelAddress = "{{ hotel.address|escapejs }}";
+            const mapElement = document.getElementById('hotel-map'); // JavaScript будет искать этот ID
+
+            if (mapElement && lat !== null && lon !== null) {
+                try {
+                    const map = L.map('hotel-map').setView([lat, lon], 16);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    }).addTo(map);
+                    const marker = L.marker([lat, lon]).addTo(map);
+                    marker.bindPopup(`<b>${hotelName}</b><br>${hotelAddress}`).openPopup();
+                } catch (e) {
+                    console.error("{% translate 'Ошибка инициализации карты Leaflet:' %}", e);
+                    mapElement.innerHTML = '<p style="padding: 20px; color: #777; text-align:center;">{% translate "Не удалось загрузить карту." %}</p>';
+                }
+            } else if (mapElement) {
+                mapElement.innerHTML = '<p style="padding: 20px; color: #777; text-align:center;">{% translate "Местоположение отеля не указано или карта не может быть отображена." %}</p>';
+                mapElement.style.display = 'flex';
+                mapElement.style.alignItems = 'center';
+                mapElement.style.justifyContent = 'center';
+                mapElement.style.height = '100px';
+            } else {
+                // Этого сообщения не должно быть, если div id="hotel-map" присутствует в HTML и условие с координатами не выполнено
+                console.warn("{% translate 'Элемент карты \'hotel-map\' не найден. Карта не будет инициализирована.' %}");
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{# templates/hotels/create_booking.html #}
+{% extends "base.html" %}
+{% load i18n %} {# <--- Добавлен i18n #}
+
+{% block title %}{% blocktranslate %}Бронирование: {{ room_type.name }} - {{ hotel.name }}{% endblocktranslate %}{% endblock %} {# Перевод #}
+
+{% block content %}
+<div class="container" style="padding-top: 30px; padding-bottom: 30px;">
+    <h1>{% translate "Бронирование номера" %}</h1> {# Перевод #}
+    <h2>{{ hotel.name }}</h2>
+    <h3>{% blocktranslate %}Тип номера: {{ room_type.name }}{% endblocktranslate %}</h3> {# Перевод #}
+    <p>{% blocktranslate %}Базовая цена: {{ room_type.base_price|floatformat:0 }} KGS / ночь{% endblocktranslate %}</p> {# Перевод #}
+    <hr>
+
+    {% if messages %}
+        <ul class="messages" style="list-style: none; padding: 0;">
+            {% for message in messages %}
+                <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}
+                   style="padding: 10px; margin-bottom: 10px; border: 1px solid transparent; border-radius: 4px;
+                          {% if message.tags == 'success' %} background-color: #d4edda; border-color: #c3e6cb; color: #155724;
+                          {% elif message.tags == 'error' %} background-color: #f8d7da; border-color: #f5c6cb; color: #721c24;
+                          {% else %} background-color: #e2e3e5; border-color: #d6d8db; color: #383d41; {% endif %}">
+                   {{ message }} {# Сообщения переводятся во views.py #}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" style="background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p> {# Ошибки переводятся в forms.py #}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-group" style="margin-bottom: 15px;">
+             {# Метка и ошибки переводятся через form.py #}
+            {{ form.check_in_date.label_tag }}
+            {{ form.check_in_date }}
+            {% if form.check_in_date.errors %}
+                <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">{{ form.check_in_date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            {{ form.check_out_date.label_tag }}
+            {{ form.check_out_date }}
+            {% if form.check_out_date.errors %}
+                 <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">{{ form.check_out_date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            {{ form.guests_count.label_tag }}
+            {{ form.guests_count }}
+             {% if form.guests_count.help_text %}
+                 {# Подсказка переводится через form.py #}
+                <small style="display: block; color: #6c757d;">{{ form.guests_count.help_text }}</small>
+             {% endif %}
+            {% if form.guests_count.errors %}
+                 <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">{{ form.guests_count.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="cta-button">{% translate "Запросить бронирование" %}</button> {# Перевод #}
+    </form>
+
+    <p style="margin-top: 20px;"><a href="{{ hotel.get_absolute_url }}?{{ request.GET.urlencode }}">{% translate "Вернуться к отелю" %}</a></p> {# Перевод #}
+
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ... стили формы ... */
+</style>
+{% endblock %}
